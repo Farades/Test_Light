@@ -12,7 +12,7 @@
 #include <IL/ilut.h>
 #include <iostream>
 
-#define TEX_IMAGE_NAME "D:/workspace/Test_Light/test.jpg"
+#define TEX_IMAGE_NAME "D:/workspace/Test_Light/Glass.bmp"
 
 BOOL light = true;      // Свет ВКЛ / ВЫКЛ
 
@@ -52,7 +52,7 @@ void Load_Tex_Image()
 {
     int width, height, bpp;
 
-    ilLoad(IL_JPG, reinterpret_cast<const ILstring>(TEX_IMAGE_NAME));
+    ilLoad(IL_BMP, reinterpret_cast<const ILstring>(TEX_IMAGE_NAME));
     int err = ilGetError();                          // Считывание кода ошибки
     if (err != IL_NO_ERROR)
     {
@@ -99,7 +99,7 @@ void Load_Tex_Image()
     GL_RGB, GL_UNSIGNED_BYTE, data);
         //3-я текстура
     glBindTexture(GL_TEXTURE_2D, texture[2]);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0,
     GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -116,6 +116,10 @@ void init()
     ilutInit();
 
     Load_Tex_Image();
+
+    glColor4f(1.0f,1.0f,1.0f,0.5f);   // Полная яркость, 50% альфа (НОВОЕ)
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE); // Функция смешивания для непрозрачности,
+                                      // базирующаяся на значении альфы(НОВОЕ)
 
     glEnable(GL_TEXTURE_2D);      // Разрешить наложение текстуры
     glViewport( 0, 0, WinWidth, WinHeight );
@@ -166,7 +170,7 @@ void KeyboardEvent(unsigned char key, int x, int y)
             break;
         case 'f' :
             filter += 1;           // значение filter увеличивается на один
-            if (filter > 1)        // Значение больше чем 2?
+            if (filter > 2)        // Значение больше чем 2?
                 filter = 0;
             glutPostRedisplay();
             break;
